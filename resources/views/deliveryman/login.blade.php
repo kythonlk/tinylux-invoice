@@ -7,7 +7,7 @@
           <div class="col-md-4">
 
             <div class="card card-primary">
-              <div class="card-header"><h4>{{__('Delivery Man Login')}}</h4></div>
+              <div class="card-header"><h4>{{__('Delivery-Man Login')}}</h4></div>
 
               <div class="card-body">
                 <form class="needs-validation" novalidate="" id="adminLoginForm">
