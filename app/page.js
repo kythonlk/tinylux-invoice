@@ -58,9 +58,10 @@ export default function Page() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    const parsedValue = value === "" ? 0 : name === "deliveryAmount" ? parseFloat(value) : value;
     setInvoiceData((prev) => ({
       ...prev,
-      [name]: name === "deliveryAmount" ? parseFloat(value) : value,
+      [name]: parsedValue,
     }));
   };
 
@@ -90,6 +91,8 @@ export default function Page() {
   };
 
   const generatePDF = async () => {
+    console.log(invoiceData);
+    
     const blob = await pdf(<Invoice data={invoiceData} />).toBlob();
     const url = URL.createObjectURL(blob);
     const fileName = `invoice-${invoiceData.invoiceNumber}.pdf`;
@@ -114,6 +117,36 @@ export default function Page() {
     localStorage.setItem("invoiceData", JSON.stringify(emptyData));
   };
 
+  const sharePDF = async () => {
+    if (!pdfUrl) {
+      await generatePDF();
+    }
+  
+    const blob = await fetch(pdfUrl).then(res => res.blob());
+    const fileName = `invoice-${invoiceData.invoiceNumber}.pdf`;
+  
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          files: [new File([blob], fileName, { type: 'application/pdf' })],
+          title: 'Invoice',
+          text: 'Here is your invoice',
+        });
+      } catch (error) {
+        console.error('Error sharing:', error);
+      }
+    } else {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  };
+
   return (
     <main className="flex min-h-screen flex-col items-center gap-4 p-4">
       <h1 className="text-2xl font-bold">Invoice Generator</h1>
@@ -126,7 +159,7 @@ export default function Page() {
         currentItem={currentItem}
         handleUpdateItem={handleUpdateItem}
       />
-      <InvoiceActions generatePDF={generatePDF} clearData={clearData} />
+      <InvoiceActions generatePDF={generatePDF} clearData={clearData} sharePDF={sharePDF} />
       {pdfUrl && (
         <div className="w-full mt-4">
           <a

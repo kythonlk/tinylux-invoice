@@ -88,7 +88,6 @@ export default function InvoiceForm({ invoiceData, handleChange, addItem, remove
                 <th className="px-4 py-2 text-left">Item</th>
                 <th className="px-4 py-2 text-left">Quantity</th>
                 <th className="px-4 py-2 text-right">Price</th>
-                <th className="px-4 py-2 text-right">Total</th>
                 <th className="px-4 py-2 text-right">Actions</th>
               </tr>
             </thead>
@@ -97,8 +96,7 @@ export default function InvoiceForm({ invoiceData, handleChange, addItem, remove
                 <tr key={index}>
                   <td className="px-4 py-2">{item.name}</td>
                   <td className="px-4 py-2">{item.quantity}</td>
-                  <td className="px-4 py-2 text-right">${item.price}</td>
-                  <td className="px-4 py-2 text-right">${(item.price * item.quantity)}</td>
+                  <td className="px-4 py-2 text-right">AED{item.price}</td>
                   <td className="px-4 py-2 text-right">
                     <button onClick={() => removeItem(index)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded mr-2">
                       Remove

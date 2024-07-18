@@ -3,7 +3,9 @@
 import { Page, Text, View, Document, StyleSheet, Image } from "@react-pdf/renderer";
 import image from "./tiny.png";
 
-export const Invoice = ({ data }) => (
+export const Invoice = ({ data }) => {
+  const subTotal = data.items.reduce((sum, item) => sum + Number(item.price), 0);
+  return(
   <Document>
     <Page size="A4" style={styles.page}>
       <View style={styles.header}>
@@ -37,18 +39,18 @@ export const Invoice = ({ data }) => (
         </View>
         {data.items.map((item, index) => (
           <View key={index} style={styles.tableRow}>
-            <Text style={styles.tableCell}>{item.service}</Text>
+            <Text style={styles.tableCell}>{item.name}</Text>
             <Text style={styles.tableCell}>{item.quantity}</Text>
             <Text style={styles.tableCell}>AED {item.price}</Text>
-            <Text style={styles.tableCell}>AED {item.total}</Text>
+            <Text style={styles.tableCell}>AED {item.price}</Text>
           </View>
         ))}
       </View>
 
       <View style={styles.totals}>
-        <Text style={styles.totalLine}>Sub-total : AED {data.subtotal}</Text>
+        <Text style={styles.totalLine}>Sub-total : AED {subTotal}</Text>
         <Text style={styles.totalLine}>Dilivery : AED {data.deliveryAmount}</Text>
-        <Text style={styles.totalLine}>Total : AED {data.total}</Text>
+        <Text style={styles.totalLine}>Total : AED {subTotal + data.deliveryAmount}</Text>
       </View>
 
       <View style={styles.footer}>
@@ -58,7 +60,8 @@ export const Invoice = ({ data }) => (
       </View>
     </Page>
   </Document>
-);
+  )
+};
 
 const styles = StyleSheet.create({
   page: {
